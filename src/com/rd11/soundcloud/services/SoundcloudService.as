@@ -71,8 +71,8 @@ package com.rd11.soundcloud.services
 			service.rootURL = "http://api.soundcloud.com/tracks.json";
 			
 			service.url = "?consumer_key="+CONSUMER_KEY+
-						  "&tags=geo:lat="+lat+"*"+
-						  "&tags=geo:lon="+long+"*;"
+						  "&tags=geo:lat="+lat.toFixed(6)+
+						  "&tags=geo:lon="+long.toFixed(6)+";"
 			
 			service.addEventListener(ResultEvent.RESULT, onResult_getTracks );
 			service.addEventListener(FaultEvent.FAULT, onFault_getTracks );

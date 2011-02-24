@@ -48,7 +48,7 @@ package com.rd11.soundcloud.controller
 		 * 
 		 */		
 		private function getTracks(lat:Number, lon:Number):void{
-			service.getTracks(int(lat), int(long) );
+			service.getTracks(lat, long );
 		}
 		
 		/**
