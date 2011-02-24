@@ -8,11 +8,15 @@ package com.rd11.soundcloud.services
 {
 	import com.adobe.serialization.json.JSON;
 	import com.rd11.soundcloud.models.SoundcloudModel;
+	import com.rd11.soundcloud.models.vo.TokenVO;
+	import com.rd11.soundcloud.models.vo.TrackVO;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequestMethod;
+	import flash.net.registerClassAlias;
+	import flash.utils.ByteArray;
 	
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -29,6 +33,8 @@ package com.rd11.soundcloud.services
 		
 		[Inject]
 		public var bus:SoundcloudSignalBus;
+		
+		private static const CONSUMER_KEY:String = "AZNJgoblAU8ykZNDnCl7Q";
 		
 		public function SoundcloudService()
 		{
@@ -54,12 +60,19 @@ package com.rd11.soundcloud.services
 			service.send( params );
 		}
 		
+		public function refreshToken( clientId:String, clientSecret:String, grantType:String, refreshToken:String ):void{
+			
+		}
+		
 		public function getTracks(lat:Number, long:Number):void
 		{
 			var service : HTTPService = new HTTPService();
 			service.method = URLRequestMethod.GET;
-			service.url = "http://api.soundcloud.com/tracks.json?consumer_key=AZNJgoblAU8ykZNDnCl7Q&tags=geo:lat="+lat+"*&tags=geo:lon="+long+"*;"
-			//service.useProxy = false;
+			service.rootURL = "http://api.soundcloud.com/tracks.json";
+			
+			service.url = "?consumer_key="+CONSUMER_KEY+
+						  "&tags=geo:lat="+lat+"*"+
+						  "&tags=geo:lon="+long+"*;"
 			
 			service.addEventListener(ResultEvent.RESULT, onResult_getTracks );
 			service.addEventListener(FaultEvent.FAULT, onFault_getTracks );
@@ -67,18 +80,41 @@ package com.rd11.soundcloud.services
 			service.send();
 		}
 		
+		public function postTrack( trackVO:TrackVO ):void{
+			var service : HTTPService = new HTTPService();
+			service.method = URLRequestMethod.POST;
+			service.rootURL = "http://api.soundcloud.com/tracks";
+
+			service.addEventListener(ResultEvent.RESULT, onResult_postTrack );
+			service.addEventListener(FaultEvent.FAULT, onFault_postTrack );
+			
+			//required
+			if( trackVO.title != "" && trackVO.asset_data ){
+				service.send( trackVO );
+			}
+		}
+		
 		//*****************************************
 		// HANDLERS
 		//*****************************************	
 		
 		private function onResult_getToken( event : ResultEvent ) : void{
-			var jsonObj:Object = JSON.decode( event.result as String);
-			var accessToken : String = jsonObj.access_token;
-			bus.tokenResponse.dispatch( accessToken );	
+			var tokenVO:TokenVO = new TokenVO();
+			tokenVO.setResponse( JSON.decode( event.result as String) );
+			bus.getTokenResponse.dispatch( tokenVO );	
 		}
 		
 		private function onFault_getToken( event : FaultEvent ) : void{
 			trace(event);
+		}
+		
+
+		private function onResult_postTrack(event : ResultEvent ) : void{
+			//var jsonObj:Object = JSO.decode( event.result as String);
+		}
+		
+		private function onFault_postTrack( event : FaultEvent ) : void{
+			trace("onFault_postTrack "+event);
 		}
 		
 		private function onResult_getTracks( event:ResultEvent ):void{

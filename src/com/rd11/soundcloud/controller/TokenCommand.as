@@ -11,6 +11,9 @@ package com.rd11.soundcloud.controller
 	import com.rd11.soundcloud.services.ISoundcloudService;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	
+	import flash.net.SharedObject;
+	import flash.net.registerClassAlias;
+	
 	import mx.collections.ArrayCollection;
 	
 	import org.robotlegs.mvcs.Command;
@@ -30,18 +33,29 @@ package com.rd11.soundcloud.controller
 		[Inject]
 		public var tokenVO:TokenVO;
 		
+		[Inject]
+		public var refresh:Boolean;
+		
 		public function TokenCommand()
 		{
 			super();
 		}
 		
 		override public function execute():void{
-			bus.tokenResponse.add( onResults_getToken );
-			getToken();
+			bus.getTokenResponse.add( onResults_getToken );
+			if( refresh ){
+				refreshToken();
+			}else{
+				getToken();
+			}
 		}
 		
 		private function getToken():void{
 			service.getToken( tokenVO.clientId, tokenVO.clientSecret, tokenVO.grantType, tokenVO.redirectURI, tokenVO.code );
+		}
+
+		private function refreshToken():void{
+			service.refreshToken( tokenVO.clientId, tokenVO.clientSecret, tokenVO.grantType, tokenVO.refreshToken );
 		}
 		
 		/**
@@ -49,8 +63,15 @@ package com.rd11.soundcloud.controller
 		 * @param results
 		 * 
 		 */		
-		private function onResults_getToken(token : String):void{
-			model.accessToken = token;
+		private function onResults_getToken(token : TokenVO):void{
+			model.accessToken = token.accessToken;
+			
+			//tack on date time
+			token.dateSaved = new Date().time;
+			
+			var so : SharedObject = SharedObject.getLocal("soundcloud");
+			so.data["token"] = token;
+			so.flush();
 		}
 	}	
 }

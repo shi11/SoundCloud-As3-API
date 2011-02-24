@@ -1,47 +1,42 @@
 package com.rd11.soundcloud.models.vo
 {
+	[RemoteClass(alias="soundcloud.models.vo.TokenVO")]
 	public class TokenVO
 	{
-		private var _clientId:String;
-		private var _clientSecret:String;
-		private var _grantType:String;
-		private var _redirectURI:String;
-		private var _code:String;
+		//request: passed into constructor
+		public var clientId:String;
+		public var clientSecret:String;
+		public var grantType:String;
+		public var redirectURI:String;
+		public var code:String;
 		
-		public function TokenVO(clientId:String, clientSecret:String, grantType:String, redirectURI:String, code:String)
-		{
-			_clientId = clientId;
-			_clientSecret = clientSecret;
-			_grantType = grantType;
-			_redirectURI = redirectURI;
-			_code = code;
+		//response: passed in through response setter
+		public var accessToken:String;
+		public var expiresIn:int;
+		public var refreshToken:String;
+		public var scope:String;
+		
+		//used to determine expiresIn
+		public var dateSaved:int;
+		
+		public function TokenVO(){
 		}
-
-		public function get clientId():String
-		{
-			return _clientId;
+		
+		public function setRequest(clientId:String, clientSecret:String, grantType:String, redirectURI:String, code:String):void{
+			clientId = clientId;
+			clientSecret = clientSecret;
+			grantType = grantType;
+			redirectURI = redirectURI;
+			code = code;	
 		}
-
-		public function get clientSecret():String
-		{
-			return _clientSecret;
+		
+		//from json
+		public function setResponse( value : Object ) : void{
+			accessToken = value.access_token;
+			expiresIn = value.expires_in;
+			refreshToken = value.refresh_token;
+			scope = value.scope;
 		}
-
-		public function get grantType():String
-		{
-			return _grantType;
-		}
-
-		public function get redirectURI():String
-		{
-			return _redirectURI;
-		}
-
-		public function get code():String
-		{
-			return _code;
-		}
-
 
 	}
 }

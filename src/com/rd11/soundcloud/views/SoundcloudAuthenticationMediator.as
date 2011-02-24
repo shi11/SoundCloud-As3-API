@@ -6,13 +6,10 @@
 
 package com.rd11.soundcloud.views
 {
-	import com.rd11.soundcloud.models.SoundcloudModel;
+	import com.rd11.soundcloud.models.enum.GrantType;
 	import com.rd11.soundcloud.models.vo.TokenVO;
-	import com.rd11.soundcloud.services.ISoundcloudService;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	import com.rd11.soundcloud.views.interfaces.ISoundcloudAuthenticationView;
-	
-	import flash.net.SharedObject;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -44,7 +41,7 @@ package com.rd11.soundcloud.views
 		{
 			view.locationChangeHandler = locationChangeHandler;
 			view.authenticationRequest.add( authenticate );
-			signalBus.tokenResponse.add( saveToken );
+			signalBus.getTokenResponse.add( saveToken );
 		}
 		
 		private function authenticate(clientId:String, clientSecret:String, redirectURI:String):void{
@@ -63,27 +60,24 @@ package com.rd11.soundcloud.views
 		private function locationChangeHandler( location : String ):void{
 			if (location.search('code=') > -1){
 				var code:String = location.substr(location.search('=') + 1);
-				saveCode(code);
+				//saveCode(code);
 				
-				var tokenVO:TokenVO = new TokenVO(_clientId, _clientSecret, "authorization_code", _redirectURI, code);
+				var tokenVO:TokenVO = new TokenVO();
+				tokenVO.setRequest( _clientId, _clientSecret, GrantType.AUTH_CODE, _redirectURI, code );
 				
-				signalBus.tokenRequest.dispatch( tokenVO );
+				signalBus.getTokenRequest.dispatch( tokenVO, false );
 			}
 		}
-		
+		/*
 		private function saveCode( code : String ) : void{
 			var so : SharedObject = SharedObject.getLocal("soundcloud");
 			so.data["code"] = code;
 			so.flush();
-		}
+		}*/
 		
-		protected function saveToken(token : String) : void
+		protected function saveToken(token : TokenVO) : void
 		{
-			var so : SharedObject = SharedObject.getLocal("soundcloud");
-			so.data["token"] = token;
-			so.flush();
-			
-			view.authenticationResults( token );
+			view.authenticationResults( token.accessToken );
 		}
 		
 	}
