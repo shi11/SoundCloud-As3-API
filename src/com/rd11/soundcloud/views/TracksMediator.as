@@ -1,5 +1,6 @@
 package com.rd11.soundcloud.views
 {
+	import com.rd11.soundcloud.models.vo.TagVO;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	import com.rd11.soundcloud.views.interfaces.ITracksView;
 	
@@ -25,7 +26,10 @@ package com.rd11.soundcloud.views
 		}
 		
 		private function getNearbyTracks(lat:Number, long:Number) : void{
-			bus.nearbyRequest.dispatch( lat, long );
+			var tagVO:TagVO = new TagVO();
+			tagVO.lat = lat;
+			tagVO.lon = long;
+			bus.nearbyRequest.dispatch( tagVO );
 		}
 		
 		private function onResults_tracks( array : Array ) : void{

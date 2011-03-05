@@ -7,6 +7,7 @@
 package com.rd11.soundcloud.controller
 {
 	import com.rd11.soundcloud.models.SoundcloudModel;
+	import com.rd11.soundcloud.models.vo.TagVO;
 	import com.rd11.soundcloud.services.ISoundcloudService;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	
@@ -27,11 +28,8 @@ package com.rd11.soundcloud.controller
 		public var model : SoundcloudModel;
 		
 		[Inject]
-		public var lat : Number;
+		public var tagVO : TagVO;
 
-		[Inject]
-		public var long : Number;
-		
 		public function SearchCommand()
 		{
 			super();
@@ -39,7 +37,7 @@ package com.rd11.soundcloud.controller
 		
 		override public function execute():void{
 			bus.nearbyResult.add( onResults_getTracks );
-			getTracks(lat, long);
+			getTracks(tagVO);
 		}
 		
 		/**
@@ -47,8 +45,8 @@ package com.rd11.soundcloud.controller
 		 * @param keywords (optional) search
 		 * 
 		 */		
-		private function getTracks(lat:Number, lon:Number):void{
-			service.getTracks(lat, long );
+		private function getTracks(tagVO:TagVO):void{
+			service.getTracks( tagVO );
 		}
 		
 		/**

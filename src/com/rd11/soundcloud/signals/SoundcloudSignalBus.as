@@ -1,5 +1,6 @@
 package com.rd11.soundcloud.signals
 {
+	import com.rd11.soundcloud.models.vo.TagVO;
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	import com.rd11.soundcloud.models.vo.TrackVO;
 	
@@ -21,7 +22,7 @@ package com.rd11.soundcloud.signals
 		public const refreshTokenRequest:Signal = new Signal( TokenVO, Boolean ); 
 		public const refreshTokenResponse:Signal = new Signal( TokenVO ); 
 		
-		public const nearbyRequest:Signal = new Signal( Number, Number );
+		public const nearbyRequest:Signal = new Signal( TagVO );
 		public const nearbyResult:Signal = new Signal( Array );
 		
 		public const playRequest:Signal = new Signal( String );

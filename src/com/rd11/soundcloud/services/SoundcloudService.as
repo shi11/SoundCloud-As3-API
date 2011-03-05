@@ -8,13 +8,16 @@ package com.rd11.soundcloud.services
 {
 	import com.adobe.serialization.json.JSON;
 	import com.rd11.soundcloud.models.SoundcloudModel;
+	import com.rd11.soundcloud.models.vo.TagVO;
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	import com.rd11.soundcloud.models.vo.TrackVO;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	
+	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
 	
@@ -34,7 +37,11 @@ package com.rd11.soundcloud.services
 		[Inject]
 		public var bus:SoundcloudSignalBus;
 		
-		private static const CONSUMER_KEY:String = "AZNJgoblAU8ykZNDnCl7Q";
+		private static const SOUNDCLOUD_API:String = "http://api.soundcloud.com";
+		private static const SOUNDCLOUD_SECURE_API:String = "https://api.soundcloud.com";
+		
+		//private static const CONSUMER_KEY:String = "AZNJgoblAU8ykZNDnCl7Q";
+		private static const CONSUMER_KEY:String = "ckTYMrOMUoGqw1l01Yu1A";
 		
 		public function SoundcloudService()
 		{
@@ -44,7 +51,8 @@ package com.rd11.soundcloud.services
 			
 			var service : HTTPService = new HTTPService();
 			service.method = URLRequestMethod.POST;
-			service.url = "https://api.soundcloud.com/oauth2/token";
+			service.rootURL = SOUNDCLOUD_SECURE_API;
+			service.url = "oauth2/token";
 			service.useProxy = false;
 			
 			var params : Object = new Object();
@@ -64,34 +72,49 @@ package com.rd11.soundcloud.services
 			
 		}
 		
-		public function getTracks(lat:Number, long:Number):void
+		public function getTracks( tagVO : TagVO, range:int=2 ):void
 		{
-			var service : HTTPService = new HTTPService();
+			var service:HTTPService = new HTTPService();
+			service.rootURL = SOUNDCLOUD_API;
 			service.method = URLRequestMethod.GET;
-			service.rootURL = "http://api.soundcloud.com/tracks.json";
+			service.url = "tracks.json";
 			
-			service.url = "?consumer_key="+CONSUMER_KEY+
-						  "&tags=geo:lat="+lat.toFixed(6)+
-						  "&tags=geo:lon="+long.toFixed(6)+";"
+			var latString:String = "geo:lat="+tagVO.lat.toFixed(range)+"*";
+			var lonString:String = "geo:lon="+tagVO.lon.toFixed(range)+"*";
+				
+			var args:Object = new Object();
+			args.consumer_key = CONSUMER_KEY;
+			args.tags = [latString, lonString];
 			
+			service.request = args;
 			service.addEventListener(ResultEvent.RESULT, onResult_getTracks );
 			service.addEventListener(FaultEvent.FAULT, onFault_getTracks );
 			
 			service.send();
 		}
 		
-		public function postTrack( trackVO:TrackVO ):void{
+		public function postTrack( trackVO:TrackVO, token:String ):void{
 			var service : HTTPService = new HTTPService();
-			service.method = URLRequestMethod.POST;
-			service.rootURL = "http://api.soundcloud.com/tracks";
+			//service.method = URLRequestMethod.POST;
+			service.method = URLRequestMethod.GET;
+			service.rootURL = SOUNDCLOUD_SECURE_API;
+			//service.rootURL = SOUNDCLOUD_API;
+			//service.url = "tracks.json";
+			service.url = "me.json";
 
 			service.addEventListener(ResultEvent.RESULT, onResult_postTrack );
 			service.addEventListener(FaultEvent.FAULT, onFault_postTrack );
 			
+			var args:Object = new Object();
+			args.oauth_token = token;
+			service.request = args;
+			
+			service.send();
+			
 			//required
-			if( trackVO.title != "" && trackVO.asset_data ){
+			/*if( trackVO.title != "" && trackVO.asset_data ){
 				service.send( trackVO );
-			}
+			}*/
 		}
 		
 		//*****************************************
@@ -122,6 +145,10 @@ package com.rd11.soundcloud.services
 			if( jsonObj.length > 0 ){
 				bus.nearbyResult.dispatch( jsonObj );
 			}
+		}
+		
+		private function onStatus_getTracks( event :HTTPStatusEvent ) : void{
+			trace(event);
 		}
 		
 		private function onFault_getTracks( event:FaultEvent ):void{
