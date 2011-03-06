@@ -67,7 +67,8 @@ package com.rd11.soundcloud.controller
 			model.accessToken = token.accessToken;
 			
 			//tack on date time
-			token.dateSaved = new Date().time;
+			var date:Date = new Date();
+			token.dateSaved = date.time;
 			
 			var so : SharedObject = SharedObject.getLocal("soundcloud");
 			so.data["token"] = token;
