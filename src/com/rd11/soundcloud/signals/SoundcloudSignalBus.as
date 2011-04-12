@@ -4,6 +4,7 @@ package com.rd11.soundcloud.signals
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	import com.rd11.soundcloud.models.vo.TrackVO;
 	
+	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	
 	import org.osflash.signals.Signal;

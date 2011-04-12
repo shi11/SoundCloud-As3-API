@@ -15,6 +15,7 @@ package com.rd11.soundcloud.controller
 	import flash.net.registerClassAlias;
 	
 	import mx.collections.ArrayCollection;
+	import mx.utils.Base64Encoder;
 	
 	import org.robotlegs.mvcs.Command;
 	
@@ -64,6 +65,11 @@ package com.rd11.soundcloud.controller
 		 * 
 		 */		
 		private function onResults_getToken(token : TokenVO):void{
+			/*var encoder:Base64Encoder = new Base64Encoder();
+			encoder.encode( token.accessToken );
+			var newAccessToken:String = encoder.toString();
+			
+			model.accessToken = newAccessToken;*/
 			model.accessToken = token.accessToken;
 			
 			//tack on date time

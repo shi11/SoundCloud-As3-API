@@ -1,11 +1,14 @@
 package com.rd11.soundcloud.models.vo
 {
+	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 
 	public class TrackVO
 	{
 		public var title:String; 	 	//the title of the track
-		public var asset_data:ByteArray;	 	//the original asset file
+		public var file:FileReference;
+		public var fullPath:String;
+		//public var asset_data:ByteArray;	 	//the original asset file
 		public var artwork_data:ByteArray;	//the artwork file
 		public var bpm:int;			 	//beats per minute
 		public var description:String;	//a description

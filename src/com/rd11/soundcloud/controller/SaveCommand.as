@@ -12,6 +12,8 @@ package com.rd11.soundcloud.controller
 	import com.rd11.soundcloud.services.ISoundcloudService;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	
+	import flash.events.EventDispatcher;
+	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	
 	import mx.collections.ArrayCollection;
@@ -19,7 +21,7 @@ package com.rd11.soundcloud.controller
 	import org.robotlegs.mvcs.Command;
 	
 	
-	public class RecordCommand extends Command
+	public class SaveCommand extends Command
 	{
 		[Inject]
 		public var service : ISoundcloudService;
@@ -33,7 +35,7 @@ package com.rd11.soundcloud.controller
 		[Inject]
 		public var trackVO : TrackVO;
 		
-		public function RecordCommand()
+		public function SaveCommand()
 		{
 			super();
 		}
@@ -48,7 +50,7 @@ package com.rd11.soundcloud.controller
 		}
 		
 		private function postTrack( trackVO:TrackVO ):void{
-			service.postTrack( trackVO, model.accessToken );
+			service.postTrack( trackVO );
 		}
 	}	
 }

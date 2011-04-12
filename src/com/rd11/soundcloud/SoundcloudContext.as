@@ -7,7 +7,7 @@
 package com.rd11.soundcloud
 {
 	import com.rd11.soundcloud.controller.PlayerCommand;
-	import com.rd11.soundcloud.controller.RecordCommand;
+	import com.rd11.soundcloud.controller.SaveCommand;
 	import com.rd11.soundcloud.controller.SearchCommand;
 	import com.rd11.soundcloud.controller.StartupCommand;
 	import com.rd11.soundcloud.controller.TokenCommand;
@@ -43,7 +43,7 @@ package com.rd11.soundcloud
 			signalCommandMap.mapSignal( soundcloudSignalBus.nearbyRequest, SearchCommand );
 			signalCommandMap.mapSignal( soundcloudSignalBus.getTokenRequest, TokenCommand );
 			signalCommandMap.mapSignal( soundcloudSignalBus.playRequest, PlayerCommand );
-			signalCommandMap.mapSignal( soundcloudSignalBus.postTrackRequest, RecordCommand );
+			signalCommandMap.mapSignal( soundcloudSignalBus.postTrackRequest, SaveCommand );
 			
 			//map model
 			injector.mapSingleton( SoundcloudModel );
