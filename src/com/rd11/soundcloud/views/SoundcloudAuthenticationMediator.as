@@ -48,7 +48,7 @@ package com.rd11.soundcloud.views
 		{
 			view.locationChangeHandler = locationChangeHandler;
 			view.authenticationRequest.add( authenticate );
-			signalBus.getTokenResponse.add( saveToken );
+			signalBus.getTokenResponse.add( onAuthenticationResults );
 		}
 		
 		private function authenticate(clientId:String, clientSecret:String, redirectURI:String):void{
@@ -83,7 +83,7 @@ package com.rd11.soundcloud.views
 			so.flush();
 		}*/
 		
-		protected function saveToken(token : TokenVO) : void
+		protected function onAuthenticationResults(token : TokenVO) : void
 		{
 			view.authenticationResults( token.accessToken );
 		}

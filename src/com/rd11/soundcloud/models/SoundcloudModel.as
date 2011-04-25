@@ -7,6 +7,10 @@
 package com.rd11.soundcloud.models
 {
 	//import flash.filesystem.File;
+	import com.rd11.soundcloud.models.vo.CredentialVO;
+	import com.rd11.soundcloud.models.vo.TokenVO;
+	
+	import flash.net.SharedObject;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
@@ -18,22 +22,9 @@ package com.rd11.soundcloud.models
 	{
 		
 		/**
-		 * log for service results 
-		 */		
-		private var _log:String;
-		
-		/**
 		 * current version of users app 
 		 */		
 		public var currentVersion:String;
-		
-		/**
-		 * accesstoken 
-		 */		
-		public var accessToken : String;
-		
-		//TODO Seth: remove this.
-		public var oauth_token : OAuthToken;
 		
 		/**
 		 * used for autologin 
@@ -55,15 +46,57 @@ package com.rd11.soundcloud.models
 		 */		
 		public var feed:ArrayCollection=new ArrayCollection();
 		
+		/**
+		 *constructor 
+		 */		
 		public function SoundcloudModel()
 		{
 			super();
-			//oauthFile = File.applicationStorageDirectory.resolvePath("user/oauth_token.xml");
 		}
-		
-		public function log(value:String):void{
+
+		/**
+		 * log for service results 
+		 */		
+		private var _log:String;
+
+		public function set log(value:String):void{
 			_log = value;
 		}
+		
+		public function get log():String{
+			return _log;	
+		}
+
+		/**
+		 * accesstoken 
+		 */
+		private var _token : TokenVO;
+		
+		public function get token():TokenVO
+		{
+			return _token;
+		}
+
+		public function set token(value:TokenVO):void
+		{
+			_token = value;
+		}
+
+		/**
+		 * credentials used for oauth
+		 * **/
+		private var _credentials:CredentialVO;
+		
+		public function get credentials():CredentialVO
+		{
+			return _credentials;
+		}
+
+		public function set credentials(value:CredentialVO):void
+		{
+			_credentials = value;
+		}
+
 		
 	}
 }

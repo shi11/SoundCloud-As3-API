@@ -16,8 +16,8 @@ package com.rd11.soundcloud.models.vo
 		public var refreshToken:String;
 		public var scope:String;
 		
-		//used for expiresIn
-		public var dateSaved:int;
+		//date in seconds + expiresIn
+		public var expiresOn:int;
 		
 		public function TokenVO(){
 		}

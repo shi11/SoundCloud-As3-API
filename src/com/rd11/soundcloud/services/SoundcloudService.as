@@ -76,7 +76,22 @@ package com.rd11.soundcloud.services
 		}
 		
 		public function refreshToken( clientId:String, clientSecret:String, grantType:String, refreshToken:String ):void{
+			var service : HTTPService = new HTTPService();
+			service.method = URLRequestMethod.POST;
+			service.rootURL = SOUNDCLOUD_SECURE_API;
+			service.url = "oauth2/token";
+			service.useProxy = false;
 			
+			var params : Object = new Object();
+			params.client_id = clientId;
+			params.client_secret = clientSecret;
+			params.grant_type = grantType;
+			params.refreshToken = refreshToken;
+			
+			service.addEventListener(ResultEvent.RESULT, onResult_getToken );
+			service.addEventListener(FaultEvent.FAULT, onFault_getToken );
+			
+			service.send( params );
 		}
 		
 		public function getMe():void{
@@ -86,7 +101,7 @@ package com.rd11.soundcloud.services
 			service.url = "me.json";
 			
 			var args:Object = new Object();
-			args.oauth_token = model.accessToken;
+			args.oauth_token = model.token.accessToken;
 			
 			service.request = args;
 			service.addEventListener(ResultEvent.RESULT, onResult_getMe );
@@ -119,7 +134,7 @@ package com.rd11.soundcloud.services
 		public function postTrack( trackVO:TrackVO ):void{
 			
 			var urlRequest:URLRequest = new URLRequest( SOUNDCLOUD_SECURE_API +
-										"/tracks?oauth_token=" + model.accessToken);
+										"/tracks?oauth_token=" + model.token.accessToken);
 			urlRequest.contentType = "multipart/form-data";
 			//urlRequest.requestHeaders = [new URLRequestHeader( "track[title]",trackVO.title ),new URLRequestHeader('track[asset_data]',trackVO.file.name)];
 			urlRequest.method = URLRequestMethod.POST;

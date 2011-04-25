@@ -7,6 +7,8 @@
 package com.rd11.soundcloud.controller
 {
 	import com.rd11.soundcloud.models.SoundcloudModel;
+	import com.rd11.soundcloud.models.enum.GrantType;
+	import com.rd11.soundcloud.models.vo.CredentialVO;
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	import com.rd11.soundcloud.services.ISoundcloudService;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
@@ -56,7 +58,8 @@ package com.rd11.soundcloud.controller
 		}
 
 		private function refreshToken():void{
-			service.refreshToken( tokenVO.clientId, tokenVO.clientSecret, tokenVO.grantType, tokenVO.refreshToken );
+			var credentials:CredentialVO = model.credentials;
+			service.refreshToken( credentials.clientId, credentials.clientSecret, GrantType.REFRESH_TOKEN, tokenVO.refreshToken );
 		}
 		
 		/**
@@ -65,20 +68,16 @@ package com.rd11.soundcloud.controller
 		 * 
 		 */		
 		private function onResults_getToken(token : TokenVO):void{
-			/*var encoder:Base64Encoder = new Base64Encoder();
-			encoder.encode( token.accessToken );
-			var newAccessToken:String = encoder.toString();
 			
-			model.accessToken = newAccessToken;*/
-			model.accessToken = token.accessToken;
-			
-			//tack on date time
+			//tack on date in seconds
 			var date:Date = new Date();
-			token.dateSaved = date.time;
+			token.expiresOn = (date.time/1000) + token.expiresIn;
 			
 			var so : SharedObject = SharedObject.getLocal("soundcloud");
 			so.data["token"] = token;
 			so.flush();
+			
+			model.token = token;
 		}
 	}	
 }

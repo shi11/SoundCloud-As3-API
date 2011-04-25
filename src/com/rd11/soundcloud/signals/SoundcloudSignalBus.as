@@ -1,5 +1,6 @@
 package com.rd11.soundcloud.signals
 {
+	import com.rd11.soundcloud.models.vo.CredentialVO;
 	import com.rd11.soundcloud.models.vo.TagVO;
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	import com.rd11.soundcloud.models.vo.TrackVO;
@@ -12,7 +13,8 @@ package com.rd11.soundcloud.signals
 	public class SoundcloudSignalBus
 	{
 
-		public const startupRequest:Signal = new Signal();
+		public const startupRequest:Signal = new Signal( CredentialVO );
+		public const startupResponse:Signal = new Signal( TokenVO );
 		
 		public const authenticationRequest:Signal = new Signal( String, String, String );
 		public const authenticationResult:Signal = new Signal( String );
