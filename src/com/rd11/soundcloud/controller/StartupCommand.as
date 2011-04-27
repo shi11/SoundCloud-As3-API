@@ -47,6 +47,9 @@ package com.rd11.soundcloud.controller
 				}
 			}
 			
+			//dont love this but signals doesnt accept an optional prop
+			if( !token ) token = new TokenVO();
+			
 			bus.startupResponse.dispatch( token );
 		}
 	}
