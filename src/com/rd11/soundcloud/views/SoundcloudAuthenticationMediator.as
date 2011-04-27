@@ -8,6 +8,7 @@ package com.rd11.soundcloud.views
 {
 	import com.adobe.utils.StringUtil;
 	import com.rd11.soundcloud.models.enum.GrantType;
+	import com.rd11.soundcloud.models.vo.CredentialVO;
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	import com.rd11.soundcloud.views.interfaces.ISoundcloudAuthenticationView;
@@ -51,17 +52,17 @@ package com.rd11.soundcloud.views
 			signalBus.getTokenResponse.add( onAuthenticationResults );
 		}
 		
-		private function authenticate(clientId:String, clientSecret:String, redirectURI:String):void{
-			_clientId = clientId;
-			_clientSecret = clientSecret;
-			_redirectURI = redirectURI;
+		private function authenticate( credentialVO:CredentialVO ):void{
+			_clientId = credentialVO.clientId;
+			_clientSecret = credentialVO.clientSecret;
+			_redirectURI = credentialVO.redirectUri;
 			
 			view.navigate( 
 				"https://soundcloud.com/connect"+
-				"?client_id="+clientId+
+				"?client_id="+_clientId+
 				"&client_secret="+_clientSecret+
 				"&response_type=code"+
-				"&redirect_uri="+redirectURI
+				"&redirect_uri="+_redirectURI
 				 );
 		}
 		
