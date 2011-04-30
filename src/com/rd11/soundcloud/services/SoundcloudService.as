@@ -26,6 +26,7 @@ package com.rd11.soundcloud.services
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.net.registerClassAlias;
+	import flash.system.Security;
 	import flash.utils.ByteArray;
 	
 	import mx.rpc.events.FaultEvent;
@@ -86,10 +87,10 @@ package com.rd11.soundcloud.services
 			params.client_id = clientId;
 			params.client_secret = clientSecret;
 			params.grant_type = grantType;
-			params.refreshToken = refreshToken;
+			params.refresh_token = refreshToken;
 			
-			service.addEventListener(ResultEvent.RESULT, onResult_getToken );
-			service.addEventListener(FaultEvent.FAULT, onFault_getToken );
+			service.addEventListener(ResultEvent.RESULT, onResult_refreshToken );
+			service.addEventListener(FaultEvent.FAULT, onFault_refreshToken );
 			
 			service.send( params );
 		}
@@ -133,72 +134,30 @@ package com.rd11.soundcloud.services
 		
 		public function postTrack( trackVO:TrackVO ):void{
 			
+			Security.loadPolicyFile(SOUNDCLOUD_SECURE_API+"/crossdomain.xml");
+			
 			var urlRequest:URLRequest = new URLRequest( SOUNDCLOUD_SECURE_API +
 										"/tracks?oauth_token=" + model.token.accessToken);
 			urlRequest.contentType = "multipart/form-data";
-			//urlRequest.requestHeaders = [new URLRequestHeader( "track[title]",trackVO.title ),new URLRequestHeader('track[asset_data]',trackVO.file.name)];
 			urlRequest.method = URLRequestMethod.POST;
 
-			var params:Object = {};
-			params['track[title]'] = trackVO.title;
-			params['track[asset_data]'] = trackVO.fullPath;
+			var requestParams:URLVariables = new URLVariables();
+			requestParams["track[title]"] = trackVO.title;
+			requestParams["track[sharing]"] = "private";
+			//params["track[asset_data]"] = trackVO.file;
 			/*params["track[description]"] = "test description";
 			params["track[downloadable]"] = true;
-			params["track[sharing]"] = "public";
-			params.oauth_token = model.accessToken;*/
-			urlRequest.data = params;
+			params.oauth_token = model.token.accessToken;*/
+			urlRequest.data = requestParams;
 			
 			var file:FileReference = trackVO.file;
 			file.addEventListener(ProgressEvent.PROGRESS, onUploadProgress);
 			file.addEventListener( Event.COMPLETE, onUploadComplete );
 			file.addEventListener( IOErrorEvent.IO_ERROR, onUploadIOError );
-			//file.addEventListener( HTTPStatusEvent.HTTP_STATUS, onHTTPStatus );
 			file.addEventListener( HTTPStatusEvent.HTTP_RESPONSE_STATUS, onHTTPStatus );
 			file.addEventListener( SecurityErrorEvent.SECURITY_ERROR, onSecurityError );
-			file.upload( urlRequest, file.name );
+			file.upload( urlRequest, "track[asset_data]" );
 			
-			//var urlRequest:URLRequest = new URLRequest( "http://squareFM:14delmar@api.soundcloud.com" + "/tracks?consumer_key=" + CONSUMER_KEY );
-			//var urlRequest:URLRequest = new URLRequest( SOUNDCLOUD_API + "/tracks?access_token=" + model.accessToken );
-			/*var args:Object = new Object();
-			args.asset_data = trackVO.file.data;
-			args.title = trackVO.title;
-			args.description = "test description";
-			args.sharing = "public";*/
-			
-			//args.oauth_consumer_key = model.oauth_token.key;
-			//args.oauth_token = model.oauth_token;
-			//args.oauth_signature_method = "HMAC-SHA1";
-			//args.asset_data = trackVO.asset_data;
-			//args.oauth_nonce = model.oauth_token. hmmmm
-			//args.oauth_signature = model.oauth_token. hmmm
-			
-			/*Filename        24 Hours A Day, The Best Music In Town -1-.mp3 
-			consumer_key    ROZpuawx7DzB7gryrcNA 
-			oauth_timestamp 1288026774 
-			oauth_access_token      XmnI6RF05QvDZbY833lFtw 
-			sharing public 
-			oauth_consumer_key      ROZpuawx7DzB7gryrcNA 
-			description     this is a song 
-			oauth_nonce     703045FE-9029-0A37-1DBA-E460DA0D41B7 
-			oauth_signature TDi4DgLaVKjmtFfR3nYyXTF3H5o= 
-				title   my test track number 2 
-			oauth_token     XmnI6RF05QvDZbY833lFtw 
-			oauth_signature_method  HMAC-SHA1 
-			asset_data      24 Hours A Day, The Best Music In Town -1-.mp3 
-			Upload  Submit Query*/
-			
-			
-			//service.url = "tracks";
-			
-			//http://un:pw@rootURL
-
-			//service.addEventListener(ResultEvent.RESULT, onResult_postTrack );
-			//service.addEventListener(FaultEvent.FAULT, onFault_postTrack );
-			
-			//required
-			//if( trackVO.title != "" && trackVO.asset_data ){
-			//	service.send( args );
-			//}
 		}
 		
 		//*****************************************
@@ -213,6 +172,17 @@ package com.rd11.soundcloud.services
 		}
 		
 		private function onFault_getToken( event : FaultEvent ) : void{
+			trace(event);
+		}
+
+		private function onResult_refreshToken( event : ResultEvent ) : void{
+			var tokenVO:TokenVO = new TokenVO();
+			tokenVO.setResponse( JSON.decode( event.result as String) );
+			bus.getTokenResponse.dispatch( tokenVO );
+			//getMe();
+		}
+		
+		private function onFault_refreshToken( event : FaultEvent ) : void{
 			trace(event);
 		}
 		
