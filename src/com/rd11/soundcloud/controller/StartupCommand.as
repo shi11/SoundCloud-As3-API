@@ -31,7 +31,9 @@ package com.rd11.soundcloud.controller
 			soundcloudModel.credentials = credentials;
 			
 			var so : SharedObject = SharedObject.getLocal("soundcloud");
-			var token:TokenVO = so.data["token"] as TokenVO;
+			if( so ){
+				var token:TokenVO = so.data["token"] as TokenVO;
+			}
 			
 			if( token && token.accessToken && token.expiresOn){
 				var todaySeconds:int = new Date().time / 1000; //convert to seconds
@@ -44,6 +46,9 @@ package com.rd11.soundcloud.controller
 					//TODO disable authenticated in settings
 				}
 			}
+			
+			//dont love this but signals doesnt accept an optional prop
+			if( !token ) token = new TokenVO();
 			
 			bus.startupResponse.dispatch( token );
 		}
