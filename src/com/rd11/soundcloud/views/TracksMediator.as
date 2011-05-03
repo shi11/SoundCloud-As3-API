@@ -23,17 +23,23 @@ package com.rd11.soundcloud.views
 		override public function onRegister() : void{
 			view.nearbyRequest.add( getNearbyTracks );
 			bus.nearbyResult.add( onResults_tracks );
+			view.trackSelected.add( onTrackSelected );
 		}
 		
-		private function getNearbyTracks(lat:Number, long:Number) : void{
+		protected function getNearbyTracks(lat:Number, long:Number) : void{
 			var tagVO:TagVO = new TagVO();
 			tagVO.lat = lat;
 			tagVO.lon = long;
 			bus.nearbyRequest.dispatch( tagVO );
 		}
 		
-		private function onResults_tracks( array : Array ) : void{
+		protected function onResults_tracks( array : Array ) : void{
 			view.tracksResult( array );
+		}
+		
+		//todo: make trackVO
+		protected function onTrackSelected( value:Object ) : void{
+			bus.trackSelected.dispatch( value );
 		}
 	}
 }
