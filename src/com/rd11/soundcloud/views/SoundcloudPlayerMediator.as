@@ -2,20 +2,20 @@ package com.rd11.soundcloud.views
 {
 	import com.rd11.soundcloud.models.SoundcloudModel;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
-	import com.rd11.soundcloud.views.interfaces.IPlayerView;
+	import com.rd11.soundcloud.views.interfaces.ISoundcloudPlayerView;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
-	public class PlayerMediator extends Mediator
+	public class SoundcloudPlayerMediator extends Mediator
 	{
 		
 		[Inject]
 		public var soundcloudBus:SoundcloudSignalBus;
 		
 		[Inject]
-		public var view:IPlayerView;
+		public var view:ISoundcloudPlayerView;
 		
-		public function PlayerMediator()
+		public function SoundcloudPlayerMediator()
 		{
 			super();
 		}
