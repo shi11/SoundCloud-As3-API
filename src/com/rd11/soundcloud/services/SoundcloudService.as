@@ -14,7 +14,6 @@ package com.rd11.soundcloud.services
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
@@ -22,12 +21,9 @@ package com.rd11.soundcloud.services
 	import flash.net.FileReference;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
-	import flash.net.registerClassAlias;
 	import flash.system.Security;
-	import flash.utils.ByteArray;
 	
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -48,16 +44,15 @@ package com.rd11.soundcloud.services
 		private static const SOUNDCLOUD_API:String = "http://api.soundcloud.com";
 		private static const SOUNDCLOUD_SECURE_API:String = "https://api.soundcloud.com";
 		
-		//private static const CONSUMER_KEY:String = "AZNJgoblAU8ykZNDnCl7Q";
-		private static const CONSUMER_KEY:String = "ckTYMrOMUoGqw1l01Yu1A";
+		private var service:HTTPService;
 		
 		public function SoundcloudService()
 		{
+			service = new HTTPService();
 		}
 		
 		public function getToken( clientId:String, clientSecret:String, grantType:String, redirectURI:String, code:String ):void{
 			
-			var service : HTTPService = new HTTPService();
 			service.method = URLRequestMethod.POST;
 			service.rootURL = SOUNDCLOUD_SECURE_API;
 			service.url = "oauth2/token";
@@ -77,7 +72,6 @@ package com.rd11.soundcloud.services
 		}
 		
 		public function refreshToken( clientId:String, clientSecret:String, grantType:String, refreshToken:String ):void{
-			var service : HTTPService = new HTTPService();
 			service.method = URLRequestMethod.POST;
 			service.rootURL = SOUNDCLOUD_SECURE_API;
 			service.url = "oauth2/token";
@@ -96,7 +90,6 @@ package com.rd11.soundcloud.services
 		}
 		
 		public function getMe():void{
-			var service:HTTPService = new HTTPService();
 			service.rootURL = SOUNDCLOUD_SECURE_API;
 			service.method = URLRequestMethod.GET;
 			service.url = "me.json";
@@ -113,7 +106,6 @@ package com.rd11.soundcloud.services
 		
 		public function getTracks( tagVO : TagVO, range:int=2 ):void
 		{
-			var service:HTTPService = new HTTPService();
 			service.rootURL = SOUNDCLOUD_API;
 			service.method = URLRequestMethod.GET;
 			service.url = "tracks.json";
@@ -122,7 +114,7 @@ package com.rd11.soundcloud.services
 			var lonString:String = "geo:lon="+tagVO.lon.toFixed(range)+"*";
 				
 			var args:Object = new Object();
-			args.consumer_key = CONSUMER_KEY;
+			args.consumer_key = model.credentials.clientId;
 			args.tags = [latString, lonString];
 			
 			service.request = args;
@@ -168,22 +160,31 @@ package com.rd11.soundcloud.services
 			var tokenVO:TokenVO = new TokenVO();
 			tokenVO.setResponse( JSON.decode( event.result as String) );
 			bus.getTokenResponse.dispatch( tokenVO );
-			//getMe();
+			
+			service.removeEventListener(ResultEvent.RESULT, onResult_getToken );
+			service.removeEventListener(FaultEvent.FAULT, onFault_getToken );
 		}
 		
 		private function onFault_getToken( event : FaultEvent ) : void{
 			trace(event);
+			service.removeEventListener(ResultEvent.RESULT, onResult_getToken );
+			service.removeEventListener(FaultEvent.FAULT, onFault_getToken );
 		}
 
 		private function onResult_refreshToken( event : ResultEvent ) : void{
 			var tokenVO:TokenVO = new TokenVO();
 			tokenVO.setResponse( JSON.decode( event.result as String) );
 			bus.getTokenResponse.dispatch( tokenVO );
-			//getMe();
+			
+			service.removeEventListener(ResultEvent.RESULT, onResult_refreshToken );
+			service.removeEventListener(FaultEvent.FAULT, onFault_refreshToken );
 		}
 		
 		private function onFault_refreshToken( event : FaultEvent ) : void{
 			trace(event);
+			service.removeEventListener(ResultEvent.RESULT, onResult_refreshToken );
+			service.removeEventListener(FaultEvent.FAULT, onFault_refreshToken );
+
 		}
 		
 		private function onResult_getMe(event : ResultEvent ) : void { 
@@ -199,17 +200,6 @@ package com.rd11.soundcloud.services
 			// do nothing if this is not an error status
 			if (event.status != 0 && event.status < 400)
 				return;
-			
-			// remove complete handler
-			/*if (event.target is FileReference) {
-				fileReference.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, uploadCompleteDataHandler);
-			} else {
-				//				urlLoader.removeEventListener(Event.COMPLETE, urlLoaderCompleteHandler);
-				
-				// avoid RTE caused by unparsable URLVariables through switching expected response format
-				// to simple text
-				urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
-			}*/
 			
 			var msg:String;
 			
@@ -306,15 +296,10 @@ package com.rd11.soundcloud.services
 			
 		}
 
-		/*private function onResult_postTrack(event : ResultEvent ) : void{
-			//var jsonObj:Object = JSO.decode( event.result as String);
-		}
-		
-		private function onFault_postTrack( event : FaultEvent ) : void{
-			trace("onFault_postTrack "+event);
-		}*/
-		
 		private function onResult_getTracks( event:ResultEvent ):void{
+			service.removeEventListener(ResultEvent.RESULT, onResult_getTracks );
+			service.removeEventListener(FaultEvent.FAULT, onFault_getTracks );
+			
 			var jsonObj:Object = JSON.decode( event.result as String);
 			if( jsonObj.length > 0 ){
 				bus.nearbyResult.dispatch( jsonObj );
@@ -329,6 +314,9 @@ package com.rd11.soundcloud.services
 			/*var errorEvent: ErrorEven = new ErrorEvent( ErrorEvent.ERROR );
 			errorEvent.error = new Error( event.fault.faultDetail );
 			dispatch( errorEvent );*/
+			
+			service.removeEventListener(ResultEvent.RESULT, onResult_getTracks );
+			service.removeEventListener(FaultEvent.FAULT, onFault_getTracks );
 		}
 		
 		//*****************************************

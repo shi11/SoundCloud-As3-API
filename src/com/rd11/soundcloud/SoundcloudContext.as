@@ -30,6 +30,7 @@ package com.rd11.soundcloud
 			super();
 		}
 		
+		
 		public static function get bus():SoundcloudSignalBus{
 			return soundcloudSignalBus;
 		}
@@ -51,7 +52,7 @@ package com.rd11.soundcloud
 			
 			//map service
 			injector.mapSingletonOf( ISoundcloudService, SoundcloudService );
-			
 		}
+		
 	}
 }

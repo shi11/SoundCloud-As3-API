@@ -27,7 +27,8 @@ package com.rd11.soundcloud.controller
 		[Inject]
 		public var model : SoundcloudModel;
 		
-		private static const CLIENT_ID:String = "AZNJgoblAU8ykZNDnCl7Q";
+		[Inject]
+		public var stream : String;
 		
 		public function PlayerCommand()
 		{
@@ -35,12 +36,11 @@ package com.rd11.soundcloud.controller
 		}
 		
 		override public function execute():void{
-			bus.playRequest.add( startPlay );
+			startPlay();
 		}
 		
-		private function startPlay( stream : String):void{
-			//bus.playResponse.dispatch( stream +"?oauth_token=" + model.accessToken );
-			bus.playResponse.dispatch( stream +"?consumer_key=" + CLIENT_ID );
+		private function startPlay():void{
+			bus.playResponse.dispatch( stream +"?consumer_key=" + model.credentials.clientId );
 		}
 	}	
 }

@@ -7,6 +7,7 @@
 package com.rd11.soundcloud.models
 {
 	//import flash.filesystem.File;
+	import com.rd11.soundcloud.SoundcloudContext;
 	import com.rd11.soundcloud.models.vo.CredentialVO;
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	
