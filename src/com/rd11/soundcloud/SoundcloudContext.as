@@ -41,7 +41,7 @@ package com.rd11.soundcloud
 			injector.mapValue( SoundcloudSignalBus, soundcloudSignalBus );
 			
 			signalCommandMap.mapSignal( soundcloudSignalBus.startupRequest, StartupCommand );
-			signalCommandMap.mapSignal( soundcloudSignalBus.nearbyRequest, SearchCommand );
+			signalCommandMap.mapSignal( soundcloudSignalBus.getTracksRequest, SearchCommand );
 			signalCommandMap.mapSignal( soundcloudSignalBus.getTokenRequest, TokenCommand );
 			signalCommandMap.mapSignal( soundcloudSignalBus.refreshTokenRequest, TokenCommand );
 			signalCommandMap.mapSignal( soundcloudSignalBus.playRequest, PlayerCommand );

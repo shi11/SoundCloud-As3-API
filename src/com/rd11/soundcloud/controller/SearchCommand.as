@@ -36,7 +36,7 @@ package com.rd11.soundcloud.controller
 		}
 		
 		override public function execute():void{
-			bus.nearbyResult.add( onResults_getTracks );
+			bus.getTracksResult.add( onResults_getTracks );
 			getTracks(tagVO);
 		}
 		

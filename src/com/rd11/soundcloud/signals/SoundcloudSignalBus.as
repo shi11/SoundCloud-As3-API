@@ -25,8 +25,8 @@ package com.rd11.soundcloud.signals
 		public const refreshTokenRequest:Signal = new Signal( TokenVO, Boolean ); 
 		public const refreshTokenResponse:Signal = new Signal( TokenVO ); 
 		
-		public const nearbyRequest:Signal = new Signal( TagVO );
-		public const nearbyResult:Signal = new Signal( Array );
+		public const getTracksRequest:Signal = new Signal( TagVO );
+		public const getTracksResult:Signal = new Signal( Array );
 		
 		//todo make use of TrackVO
 		public const trackSelected:Signal = new Signal( Object );

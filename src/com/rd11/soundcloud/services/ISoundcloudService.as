@@ -11,7 +11,7 @@ package com.rd11.soundcloud.services
 		function getToken( clientId:String, clientSecret:String, grantType:String, redirectURI:String, code:String ):void;
 		function refreshToken( clientId:String, clientSecret:String, grantType:String, refreshToken:String ):void;
 		function getMe():void;
-		function getTracks( tagVO:TagVO, range:int=2 ):void;
+		function getTracks( tagVO:TagVO ):void;
 		function postTrack( trackVO:TrackVO ):void;
 	}
 }

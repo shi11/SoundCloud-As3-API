@@ -104,18 +104,18 @@ package com.rd11.soundcloud.services
 			service.send();
 		}
 		
-		public function getTracks( tagVO : TagVO, range:int=2 ):void
+		public function getTracks( tagVO : TagVO ):void
 		{
 			service.rootURL = SOUNDCLOUD_API;
 			service.method = URLRequestMethod.GET;
 			service.url = "tracks.json";
 			
-			var latString:String = "geo:lat="+tagVO.lat.toFixed(range)+"*";
-			var lonString:String = "geo:lon="+tagVO.lon.toFixed(range)+"*";
-				
+			var latString:String;
+			var lonString:String;
+			
 			var args:Object = new Object();
 			args.consumer_key = model.credentials.clientId;
-			args.tags = [latString, lonString];
+			args.tags = tagVO.tag_list.toString().replace(","," ");
 			
 			service.request = args;
 			service.addEventListener(ResultEvent.RESULT, onResult_getTracks );
@@ -136,10 +136,8 @@ package com.rd11.soundcloud.services
 			var requestParams:URLVariables = new URLVariables();
 			requestParams["track[title]"] = trackVO.title;
 			requestParams["track[sharing]"] = "private";
-			//params["track[asset_data]"] = trackVO.file;
-			/*params["track[description]"] = "test description";
-			params["track[downloadable]"] = true;
-			params.oauth_token = model.token.accessToken;*/
+			requestParams["track[tag_list]"] = trackVO.tag_list.toString().replace(","," ");
+			requestParams["track[description]"] = trackVO.description;
 			urlRequest.data = requestParams;
 			
 			var file:FileReference = trackVO.file;
@@ -302,7 +300,7 @@ package com.rd11.soundcloud.services
 			
 			var jsonObj:Object = JSON.decode( event.result as String);
 			if( jsonObj.length > 0 ){
-				bus.nearbyResult.dispatch( jsonObj );
+				bus.getTracksResult.dispatch( jsonObj );
 			}
 		}
 		

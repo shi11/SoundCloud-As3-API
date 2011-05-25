@@ -22,15 +22,24 @@ package com.rd11.soundcloud.views
 		
 		override public function onRegister() : void{
 			view.nearbyRequest.add( getNearbyTracks );
-			bus.nearbyResult.add( onResults_tracks );
+			view.answerRequest.add( getAnswerTracks );
+			bus.getTracksResult.add( onResults_tracks );
 			view.trackSelected.add( onTrackSelected );
 		}
 		
 		protected function getNearbyTracks(lat:Number, long:Number) : void{
 			var tagVO:TagVO = new TagVO();
-			tagVO.lat = lat;
-			tagVO.lon = long;
-			bus.nearbyRequest.dispatch( tagVO );
+			tagVO.setGeo( lat, long );
+			bus.getTracksRequest.dispatch( tagVO );
+		}
+		
+		protected function getAnswerTracks(questionId:String) : void{
+			var tagVO:TagVO = new TagVO();
+			tagVO.tag_list = new Array();
+			tagVO.tag_list.push( "squarefm:type=answer" );
+			//tagVO.tag_list.push( questionId );
+			//tagVO.tag_list.push( "Answer" );
+			bus.getTracksRequest.dispatch( tagVO );
 		}
 		
 		protected function onResults_tracks( array : Array ) : void{

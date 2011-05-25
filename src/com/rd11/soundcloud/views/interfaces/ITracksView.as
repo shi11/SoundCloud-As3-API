@@ -5,6 +5,7 @@ package com.rd11.soundcloud.views.interfaces
 	public interface ITracksView
 	{
 		function get nearbyRequest():ISignal;
+		function get answerRequest():ISignal;
 		function tracksResult( array : Array ) : void;	
 		function get trackSelected():ISignal;
 	}
