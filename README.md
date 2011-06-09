@@ -10,21 +10,19 @@ Better examples to come.
 
 If you're familiar with Robotlegs then posting a track is as simple as doing this:
 
-/**1. In yourAppContext add credentials**/
-soundcloudBus.startupRequest.dispatch( new CredentialVO( SoundcloudCredentials.CLIENT_ID,
-														 SoundcloudCredentials.CLIENT_SECRET,
-														 SoundcloudCredentials.REDIRECT_URI ));
+1. In yourAppContext add credentials
+	soundcloudBus.startupRequest.dispatch( new CredentialVO( SoundcloudCredentials.CLIENT_ID, SoundcloudCredentials.CLIENT_SECRET, SoundcloudCredentials.REDIRECT_URI ));
 
-/**2. In a mediator, Post a new track**/
-//Inject the signal bus
-[Inject]
-public var soundcloudBus:SoundcloudSignalBus;		
-soundcloudBus.postTrackRequest.dispatch( trackVO );
+2. In a mediator, Post a new track
+	//Inject the signal bus
+	[Inject]
+	public var soundcloudBus:SoundcloudSignalBus;		
+	soundcloudBus.postTrackRequest.dispatch( trackVO );
 
-/**3. In a command, handle post response**/
-[Inject]
-public var soundcloudBus:SoundcloudSignalBus;		
-soundcloudBus.postTrackResponse.add( onResult_postTrack );
+3. In a command, handle post response
+	[Inject]
+	public var soundcloudBus:SoundcloudSignalBus;		
+	soundcloudBus.postTrackResponse.add( onResult_postTrack );
 
 # TODO
 Write better documentation
