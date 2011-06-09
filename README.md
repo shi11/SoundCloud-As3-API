@@ -2,7 +2,7 @@
 This is a Soundcloud API WRAPPER written in AS3. It uses the robotlegs framework with as3 signals.
 
 # Installation
-The simplest way to use it is to download the .swc and drop it into the lib directory of your project.
+The simplest way to use it is to download the <a href="https://github.com/shi11/SoundCloud-As3-API/archives/master">SoundcloudAPI.swc</a> and drop it into the lib directory of your project.
 Otherwise I would checkout it out and compile your own .swc
 
 ## Usage
@@ -16,14 +16,14 @@ If you're familiar with Robotlegs then posting a track is as simple as doing thi
 
 2. In a mediator, Post a new track
 
-	//Inject the signal bus
-	[Inject]
+	//Inject the signal bus <br />
+	[Inject] <br />
 	public var soundcloudBus:SoundcloudSignalBus;		
 	soundcloudBus.postTrackRequest.dispatch( trackVO );
 
 3. In a command, handle post response
 
-	[Inject]
+	[Inject]<br />
 	public var soundcloudBus:SoundcloudSignalBus;		
 	soundcloudBus.postTrackResponse.add( onResult_postTrack );
 
