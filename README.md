@@ -28,6 +28,8 @@ If you're familiar with Robotlegs then posting a track is as simple as doing thi
 	soundcloudBus.postTrackResponse.add( onResult_postTrack );
 
 # TODO
-Write better documentation
-Test soundcloud oauth refresh token
-Continue fleshing out the API
+<ol>
+<li>Write better documentation</li>
+<li>Test soundcloud oauth refresh token</li>
+<li>Continue fleshing out the API</li>
+</ol>
