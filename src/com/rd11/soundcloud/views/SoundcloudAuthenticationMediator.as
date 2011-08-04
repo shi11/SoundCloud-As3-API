@@ -30,12 +30,6 @@ package com.rd11.soundcloud.views
 		[Inject]
 		public var signalBus:SoundcloudSignalBus;
 		
-		/*[Inject]
-		public var soundcloudModel:SoundcloudModel;
-		
-		[Inject]
-		public var service:ISoundcloudService;*/
-		
 		private var _clientId:String;
 		private var _clientSecret:String;
 		private var _redirectURI:String;
@@ -76,13 +70,6 @@ package com.rd11.soundcloud.views
 				signalBus.getTokenRequest.dispatch( tokenVO, false );
 			}
 		}
-		
-		/*
-		private function saveCode( code : String ) : void{
-			var so : SharedObject = SharedObject.getLocal("soundcloud");
-			so.data["code"] = code;
-			so.flush();
-		}*/
 		
 		protected function onAuthenticationResults(token : TokenVO) : void
 		{

@@ -115,7 +115,9 @@ package com.rd11.soundcloud.services
 			
 			var args:Object = new Object();
 			args.consumer_key = model.credentials.clientId;
-			args.tags = tagVO.tag_list.toString().replace(","," ");
+			if( tagVO.tag_list && tagVO.tag_list.length > 0){
+				args.tags = tagVO.tag_list.toString().replace(","," ");
+			}
 			
 			service.request = args;
 			service.addEventListener(ResultEvent.RESULT, onResult_getTracks );
