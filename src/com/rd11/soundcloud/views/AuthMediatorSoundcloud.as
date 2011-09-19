@@ -21,7 +21,7 @@ package com.rd11.soundcloud.views
 	
 	import org.robotlegs.mvcs.Mediator;
 	
-	public class SoundcloudAuthenticationMediator extends Mediator
+	public class AuthMediatorSoundcloud extends Mediator
 	{
 		
 		[Inject]
@@ -34,7 +34,7 @@ package com.rd11.soundcloud.views
 		private var _clientSecret:String;
 		private var _redirectURI:String;
 		
-		public function SoundcloudAuthenticationMediator()
+		public function AuthMediatorSoundcloud()
 		{
 			super();
 		}
