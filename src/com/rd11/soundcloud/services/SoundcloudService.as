@@ -6,13 +6,13 @@
 
 package com.rd11.soundcloud.services
 {
-	import com.adobe.serialization.json.JSON;
 	import com.rd11.soundcloud.models.SoundcloudModel;
 	import com.rd11.soundcloud.models.vo.TagVO;
 	import com.rd11.soundcloud.models.vo.TokenVO;
 	import com.rd11.soundcloud.models.vo.TrackVO;
 	import com.rd11.soundcloud.signals.SoundcloudSignalBus;
 	
+	import flash.events.DataEvent;
 	import flash.events.Event;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
@@ -145,6 +145,7 @@ package com.rd11.soundcloud.services
 			var file:FileReference = trackVO.file;
 			file.addEventListener(ProgressEvent.PROGRESS, onUploadProgress);
 			file.addEventListener( Event.COMPLETE, onUploadComplete );
+			file.addEventListener( DataEvent.UPLOAD_COMPLETE_DATA, onUploadCompleteData );
 			file.addEventListener( IOErrorEvent.IO_ERROR, onUploadIOError );
 			file.addEventListener( HTTPStatusEvent.HTTP_RESPONSE_STATUS, onHTTPStatus );
 			file.addEventListener( SecurityErrorEvent.SECURITY_ERROR, onSecurityError );
@@ -158,7 +159,7 @@ package com.rd11.soundcloud.services
 		
 		private function onResult_getToken( event : ResultEvent ) : void{
 			var tokenVO:TokenVO = new TokenVO();
-			tokenVO.setResponse( JSON.decode( event.result as String) );
+			tokenVO.setResponse( JSON.parse( event.result as String) );
 			bus.getTokenResponse.dispatch( tokenVO );
 			
 			service.removeEventListener(ResultEvent.RESULT, onResult_getToken );
@@ -173,7 +174,7 @@ package com.rd11.soundcloud.services
 
 		private function onResult_refreshToken( event : ResultEvent ) : void{
 			var tokenVO:TokenVO = new TokenVO();
-			tokenVO.setResponse( JSON.decode( event.result as String) );
+			tokenVO.setResponse( JSON.parse( event.result as String) );
 			bus.getTokenResponse.dispatch( tokenVO );
 			
 			service.removeEventListener(ResultEvent.RESULT, onResult_refreshToken );
@@ -281,11 +282,17 @@ package com.rd11.soundcloud.services
 		}
 
 		public function onUploadProgress(event:ProgressEvent):void{
-			
+			bus.postTrackProgress.dispatch(event.bytesLoaded/event.bytesTotal);
 		}
 		
 		public function onUploadComplete(event:Event):void{
-			
+			//wait for data. perhaps set a pending state.
+		}
+
+		public function onUploadCompleteData(event:DataEvent):void{
+			trace(event.data);
+			var xml:XML = new XML( event.data );
+			bus.postTrackResponse.dispatch( xml );
 		}
 		
 		public function onUploadIOError(event:IOErrorEvent):void{
@@ -300,7 +307,7 @@ package com.rd11.soundcloud.services
 			service.removeEventListener(ResultEvent.RESULT, onResult_getTracks );
 			service.removeEventListener(FaultEvent.FAULT, onFault_getTracks );
 			
-			var jsonObj:Object = JSON.decode( event.result as String);
+			var jsonObj:Object = JSON.parse( event.result as String);
 			if( jsonObj.length > 0 ){
 				bus.getTracksResult.dispatch( jsonObj );
 			}

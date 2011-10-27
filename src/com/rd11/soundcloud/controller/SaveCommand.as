@@ -45,8 +45,7 @@ package com.rd11.soundcloud.controller
 			postTrack( trackVO );
 		}
 		
-		private function onResult_postTrack( results : Array ):void{
-			
+		private function onResult_postTrack( results : XML ):void{
 		}
 		
 		private function postTrack( trackVO:TrackVO ):void{

@@ -35,7 +35,8 @@ package com.rd11.soundcloud.signals
 		public const playResponse:Signal = new Signal( String );
 		
 		public const postTrackRequest:Signal = new Signal( TrackVO );
-		public const postTrackResponse:Signal = new Signal( String );
+		public const postTrackResponse:Signal = new Signal( XML );
+		public const postTrackProgress:Signal = new Signal( Number );
 		
 		
 	}
