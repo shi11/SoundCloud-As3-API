@@ -43,6 +43,7 @@ package com.rd11.soundcloud.controller
 				}else{
 					trace("expired " + ((timeLeft*-1) / 60) + " mins ago" );
 					bus.refreshTokenRequest.dispatch( token, true );
+					token.accessToken = "";
 					//TODO disable authenticated in settings
 				}
 			}

@@ -45,7 +45,7 @@ package com.rd11.soundcloud.controller
 		}
 		
 		override public function execute():void{
-			bus.getTokenResponse.add( onResults_getToken );
+			bus.getTokenResult.add( onResults_getToken );
 			if( refresh ){
 				refreshToken();
 			}else{
@@ -78,6 +78,7 @@ package com.rd11.soundcloud.controller
 			so.flush();
 			
 			model.token = token;
+			bus.getTokenResponse.dispatch( token );
 		}
 	}	
 }

@@ -16,10 +16,11 @@ package com.rd11.soundcloud.signals
 		public const startupRequest:Signal = new Signal( CredentialVO );
 		public const startupResponse:Signal = new Signal( TokenVO );
 		
-		public const authenticationRequest:Signal = new Signal( String, String, String );
-		public const authenticationResult:Signal = new Signal( String );
+		/*public const authenticationRequest:Signal = new Signal( String, String, String );
+		public const authenticationResult:Signal = new Signal( String );*/
 		
 		public const getTokenRequest:Signal = new Signal( TokenVO, Boolean ); 
+		public const getTokenResult:Signal = new Signal( TokenVO ); 
 		public const getTokenResponse:Signal = new Signal( TokenVO ); 
 
 		public const refreshTokenRequest:Signal = new Signal( TokenVO, Boolean ); 

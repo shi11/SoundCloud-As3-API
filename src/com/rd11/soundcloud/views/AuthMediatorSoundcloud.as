@@ -54,6 +54,7 @@ package com.rd11.soundcloud.views
 			view.navigate( 
 				"https://soundcloud.com/connect"+
 				"?client_id="+_clientId+
+				"&scope=non-expiring"+
 				"&client_secret="+_clientSecret+
 				"&response_type=code"+
 				"&redirect_uri="+_redirectURI

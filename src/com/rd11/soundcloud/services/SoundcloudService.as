@@ -137,7 +137,7 @@ package com.rd11.soundcloud.services
 
 			var requestParams:URLVariables = new URLVariables();
 			requestParams["track[title]"] = trackVO.title;
-			requestParams["track[sharing]"] = "private";
+			requestParams["track[sharing]"] = "public";
 			requestParams["track[tag_list]"] = trackVO.tag_list.toString().replace(","," ");
 			requestParams["track[description]"] = trackVO.description;
 			urlRequest.data = requestParams;
@@ -160,7 +160,7 @@ package com.rd11.soundcloud.services
 		private function onResult_getToken( event : ResultEvent ) : void{
 			var tokenVO:TokenVO = new TokenVO();
 			tokenVO.setResponse( JSON.parse( event.result as String) );
-			bus.getTokenResponse.dispatch( tokenVO );
+			bus.getTokenResult.dispatch( tokenVO );
 			
 			service.removeEventListener(ResultEvent.RESULT, onResult_getToken );
 			service.removeEventListener(FaultEvent.FAULT, onFault_getToken );
@@ -290,7 +290,7 @@ package com.rd11.soundcloud.services
 		}
 
 		public function onUploadCompleteData(event:DataEvent):void{
-			trace(event.data);
+			//trace(event.data);
 			var xml:XML = new XML( event.data );
 			bus.postTrackResponse.dispatch( xml );
 		}
